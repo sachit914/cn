@@ -185,5 +185,218 @@ The Physical Layer of the OSI model deals with the transmission and reception of
 
 
 
+## web protocol
 
+tcp/ip:
+
+- HTTP
+- DHCP
+- FTP
+- SMTP
+- POP3
+- IMAP
+- SSH
+
+TELNET
+
+UDP  (stateless connection)
+
+sockets
+
+ports
+
+#  HTTP (Hypertext Transfer Protocol)
+
+HTTP is the foundation of data communication on the World Wide Web. It's an application protocol that runs on top of the TCP/IP suite of protocols. 
+
+
+HTTP (is application layer protocol)
+
+http uses tcp
+
+is stateless protocol
+
+##### Basics:
+- Client-server model:
+            - The client sends a request to a server, and the server sends back a response.
+- Stateless:
+            - Each request from a client to a server must contain all the information needed to understand and process the request. The server does not retain any session information between requests.
+- Request-response mechanism:
+            -  A client sends an HTTP request and waits for an HTTP response from the server.
+- Uniform Resource Locators (URLs):
+            -  HTTP uses URLs to identify resources.
+
+##### HTTP Methods:
+
+-GET
+- POST
+- PUT
+- DELETE
+- HEAD: Similar to GET but only retrieves headers, not the body of the resource.
+
+##### Status Codes
+
+- 200 OK: The request was successful.
+- 404 Not Found: The requested resource was not found.
+- 500 Internal Server Error: There was a server-side error processing the 
+
+##### Headers:
+
+They provide meta-information about the request or response. Examples:
+
+##### Content-Type:
+Describes the type of the data in the body (like text/html or application/json).
+- User-Agent: Information about the client (like browser or device type).
+- Cache-Control: Directives for caching the resource.
+- Body: Contains the actual data of the message. In a request, it might be data being sent to the server (like form data). In a response, it might be the content of a web page or API data.
+  
+
+                Client                              Server
+                  |                                   |
+                  |---(1) HTTP Request-------------->|
+                  |                                   |
+                  |<--(2) HTTP Response--------------|
+                  |                                   |
+            
+#### Evolution:
+- HTTP/1.0: The first documented version. It opened a new TCP connection for every HTTP request/response pair.
+- HTTP/1.1: Introduced in 1997, it brought performance improvements, such as the ability to reuse TCP connections for multiple requests.
+- HTTP/2: Introduced in 2015, it provided major enhancements in performance (e.g., multiplexing multiple requests over a single connection) and efficiency.
+- HTTP/3: Building on HTTP/2 but replacing TCP with the more efficient QUIC protocol.
+
+
+#### Working
+            
+                Client (Browser)                     Server (Web/HTTP server)
+                  |                                   |
+                  |---(1) HTTP Request-------------->|
+                  |   (Method, URL, Headers, Body)    |
+                  |                                   |
+                  |<--(2) HTTP Response--------------|
+                  |   (Status, Headers, Body)         |
+                  |                                   |
+
+
+
+            Client (Browser)           Server
+                 |                       |
+                 |  GET /index.html      |
+                 |  Host: www.example.com|
+                 |---------------------->|
+                 |                       |
+                 |                       |
+                 |  HTTP/1.1 200 OK      |
+                 |  Content-Type: text/html|
+                 |                       |
+                 |  <html>...Content...</html>|
+                 |<----------------------|
+                 |                       |
+            
+- The client wants to access index.html from www.example.com.
+- The client sends an HTTP GET request.
+- The server processes the request and responds with a 200 OK status, indicating a successful request. It also specifies that the content type is text/html.
+- The server then sends the content of index.html as the body of the response.
+
+
+
+# cokies (unique string)
+
+A cookie is a small piece of data that a server sends to the user's web browser. The browser may store it and send it back with later requests to the same server. This helps the server identify the user, remember user preferences, maintain user sessions, or track user behaviors.
+
+
+#### Primary Uses:
+- Session Management: Cookies can keep users logged in as they navigate through different pages of a website.
+- Personalization: Websites can remember user preferences, such as themes, language settings, or even previously viewed content.
+- Tracking: Cookies can track user behavior, such as the pages they've visited or the links they've clicked. This is often used for analytics and advertising.
+
+
+#### Cookie Attributes:
+- Name and Value: A unique name and its associated value.
+- Domain and Path: Define the scope of the cookie – which URLs it is valid for.
+- Expires: The expiration date. If not set, the cookie will expire at the end of the session (i.e., when the browser closes).
+- Secure: If present, the cookie will be sent only over secure (HTTPS) connections.
+- HttpOnly: If present, JavaScript cannot access this cookie, which provides some protection against cross-site scripting (XSS) attacks.
+
+#### Working
+
+            1. User accesses a website for the first time:
+            
+            User's Browser                 Server (e.g., www.example.com)
+                  |                                  |
+                  |---(1) HTTP Request-------------->|
+                  |                                  |
+                  |<--(2) HTTP Response with "Set-Cookie" Header |
+                  |   (Contains cookie: session_id=1234)         |
+                  |                                  |
+            
+            2. User makes subsequent requests to the same server:
+            
+            User's Browser                 Server
+                  |                                  |
+                  |---(3) HTTP Request with "Cookie" Header--->
+                  |   (Contains cookie: session_id=1234)        |
+                  |                                  |
+                  |<--(4) HTTP Response -------------|
+                  |                                  |
+
+
+
+#### Security and Privacy Concerns:
+Third-party cookies: These cookies are set by domains other than the one the user is visiting. They are mainly used for tracking and online-advertising purposes. Many modern browsers offer ways to block third-party cookies due to privacy concerns.
+
+
+
+# DNS
+
+The Domain Name System (DNS) is a decentralized and hierarchical system that translates human-friendly domain names, like www.example.com, into IP addresses that computers use to identify each other on the network.
+
+#### The Basics of DNS
+
+At a high level, when you want to visit a website, your computer needs to know the IP address of that website's server. But humans are not good at remembering IP addresses, so we use domain names. DNS is the system that performs the translation between domain names and IP addresses.
+
+
+#### Key Components of DNS:
+- Domain Name: A human-readable address (like www.openai.com).
+- Resolver (or DNS Client): The tool your computer uses to ask the DNS system for an IP address.
+- Root Servers: The top-level of the DNS hierarchy that can direct queries toward the servers responsible for specific top-level domains (like .com or .net).
+- TLD (Top-Level Domain) Servers: Responsible for top-level domains like .com, .org, etc.
+- Authoritative DNS Servers: Provide the actual IP address mapping for a domain. They have the final authority over a domain and its associated resources.
+
+
+#### working
+
+            User's Browser            Resolver                 Root Server
+                  |                     |                          |
+                  |---(1) www.example.com? --->|                  |
+                  |                     |                          |
+                  |                     |---(2) Where's .com? --->|
+                  |                     |                          |
+                  |                     |<--(3) TLD Server for .com|
+                  |                     |                          |
+            
+                                  TLD Server                  Authoritative Server
+                                       |                          |
+                  |                     |---(4) Where's example.com? --->|
+                  |                     |                          |
+                  |                     |<----(5) IP for example.com ----|
+                  |                     |                          |
+            
+            User's Browser            Resolver
+                  |                     |
+                  |<---(6) IP Address ---|
+                  |                     |
+
+
+
+(1) Domain Request: You type www.example.com in your browser. The browser asks the Resolver for the IP address.
+(2) Ask the Root: The Resolver doesn't know the IP, so it asks a Root Server.
+(3) Root's Response: The Root Server responds with the address of the TLD Server responsible for .com domains.
+(4) Ask the TLD Server: The Resolver then asks the .com TLD Server about www.example.com.
+(5) TLD's Response: The TLD Server responds with the IP address of the Authoritative Server for example.com.
+(6) IP Address Returned: Finally, the Resolver asks the Authoritative Server for the IP address of www.example.com and then returns this IP address to your browser.
+
+Your browser can now use this IP address to connect directly to the web server hosting www.example.com and request the web page content.
+
+#### Caching
+For efficiency, at every step of this process, the results can be cached. This means that frequently accessed domain names don't need to go through this full process every time they are requested. For instance, if someone else on your network recently visited www.example.com, the Resolver might have its IP address cached and can return it immediately without querying the Root or TLD servers.
 

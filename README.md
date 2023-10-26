@@ -400,3 +400,254 @@ Your browser can now use this IP address to connect directly to the web server h
 #### Caching
 For efficiency, at every step of this process, the results can be cached. This means that frequently accessed domain names don't need to go through this full process every time they are requested. For instance, if someone else on your network recently visited www.example.com, the Resolver might have its IP address cached and can return it immediately without querying the Root or TLD servers.
 
+# what is role of Application Layer
+
+- User Interaction: This is where you see and use applications like web browsers or email clients.
+- Data Preparation: Translates data so that it's ready to be sent over the network.
+- Establishing Connections: Sets up, uses, and ends communication between applications.
+
+
+# TCP/IP model ------------------------------------------------------------------------------------->
+
+## (transport Layer)
+
+
+#### Transport Layer: Overview
+
+The transport layer sits between the application and network layers and is responsible for end-to-end communication and data flow control. This means it ensures that data gets from one application to another across the Internet reliably, in order, and without errors.
+
+
+#### Key responsibilities of the transport layer include:
+
+- Segmentation and reassembly: Breaks down large messages into smaller segments for transport and reassembles them at the destination.
+- Connection control: Can be connection-oriented (like TCP) or connectionless (like UDP).
+- Flow control: Ensures that data is sent at a rate that the recipient can handle.
+- Error control: Detects and may correct errors in the transmitted data.
+
+
+#### Main Protocols:
+
+- TCP (Transmission Control Protocol): A connection-oriented, reliable protocol. It establishes a connection, ensures data is delivered in order, and handles error checking and correction.
+- UDP (User Datagram Protocol): A connectionless, less-reliable protocol. It sends data without establishing a connection, offering faster transmission at the expense of reliability.
+
+### working  (TCP)
+
+
+              +------------------+
+              | Application      |
+              |   Email Client   |
+              +------------------+
+                       |
+                       V
+              +-------+----------+-------+
+              |  TCP  |  UDP     |       |
+              +-------+----------+-------+
+                       |
+                       V
+              +------------------+
+              |   Network (IP)   |
+              +------------------+
+                       |
+                       V
+              +------------------+
+              | Data Link &      |
+              | Physical Layers  |
+              +------------------+
+
+1) Application Layer (Email Client):
+When the Email Client wants to send a message, it constructs the email data and then requests its transmission to a specific destination.
+2) Transport Layer (TCP/UDP):
+
+- Segmentation: The data from the Email Client is handed over to the chosen transport protocol (TCP in our scenario). TCP breaks this data into manageable segments. Each of these segments gets a header attached. This header contains crucial information, like:
+
+  - Source port
+  - Destination port
+  - Sequence number
+  - Checksum (for error detection)
+
+- Order & Flow Control: TCP, being a connection-oriented protocol, ensures that segments reach the destination in the proper sequence. The flow of data is controlled to ensure neither the network nor the recipient is overwhelmed with too much data at once. For every segment that the recipient receives, an acknowledgment (ACK) is sent back to the sender.
+- Error Detection & Correction: The checksum in the TCP header allows the recipient to detect if the segment has been corrupted during transmission. If there's an error, TCP ensures that the corrupted segment is retransmitted.
+
+3) Network Layer (IP):
+
+- Transmission: Segments from the transport layer are given to the IP layer. The IP layer envelops the segment in an IP packet, which includes another header. This header has:
+  - Source IP address
+  - Destination IP address
+- The main role of this layer is to determine how to route these packets to reach the desired destination.  
+
+4) Data Link & Physical Layers:
+
+These layers are responsible for the actual transmission of the packets over a physical medium. It can be over wired (like Ethernet) or wireless mediums.
+
+5) Destination Process:
+
+- Upon reaching the destination, the Data Link & Physical Layers pass the packet upwards to the Network Layer.
+- The Network Layer (IP) then checks the packet's header to determine the correct transport layer protocol (TCP in our case) to which it should send the data.
+- The Transport Layer (TCP) receives the segment, checks the sequence numbers, and starts reassembling the segments back into the complete message. It also checks for any corruption using the checksum and requests retransmission if necessary.
+- Once reassembled, TCP hands over the full email message to the Application Layer, in this case, an Email Client or Server, based on the destination port number mentioned in the header.
+
+
+#### three way handshake
+
+The three-way handshake is a cornerstone of the TCP protocol and is used to establish a connection between a client and a server.
+
+            Client                          Server
+            ------                          ------
+            |    |                          |    |
+            | SYN |------------------------->|    |
+            |    |                          |    |
+            |    |<-------------------------|SYN,|
+            |    |      SYN, ACK            |ACK |
+            |    |                          |    |
+            | ACK |------------------------->|    |
+            |    |                          |    |
+
+#### working
+
+1) SYN:
+
+- The client wants to establish a connection, so it sends a segment with the SYN (synchronize) flag set.
+- This segment indicates the client's initial sequence number.
+2) SYN, ACK:
+
+- The server receives the client's SYN, allocates the necessary resources, and then sends a segment back.
+- This returning segment has both the SYN and ACK (acknowledge) flags set.
+- The ACK acknowledges receipt of the client's SYN (by having its acknowledgment number field set to the client's sequence number + 1).
+- The SYN indicates the server's initial sequence number.
+3) ACK:
+
+- The client receives the server's SYN, ACK segment, allocates resources for the connection, and sends an ACK back to the server.
+- This acknowledges receipt of the server's SYN.
+
+
+### UDP
+
+              +------------------+
+              | Application      |
+              |   Email Client   |
+              +------------------+
+                       |
+                       V
+              +-------+----------+-------+
+              |       |  UDP     |       |
+              +-------+----------+-------+
+                       |
+                       V
+              +------------------+
+              |   Network (IP)   |
+              +------------------+
+                       |
+                       V
+              +------------------+
+              | Data Link &      |
+              | Physical Layers  |
+              +------------------+
+
+
+#### working
+
+1) Application Layer:
+
+The Email Client prepares a message and sends it to the transport layer.
+2) Transport Layer (UDP):
+
+Segmentation: UDP takes the data, adds a small header (with source/destination port, length, and optional checksum) and sends it as a "datagram".
+udp packet
+3) Network Layer (IP):
+
+IP wraps the UDP datagram with its own header (containing source/destination IP addresses) and handles the routing of this packet to its destination.
+4) Data Link & Physical Layers:
+
+These layers manage the actual transmission of the packet over the physical medium, converting packet data to actual signals.
+5)Destination Process:
+
+- The packet moves up the layers. At the Network Layer, it’s passed to UDP in the Transport Layer.
+- UDP passes the data to the appropriate application, in this case, the Email Client or Server, based on the port in the UDP header.
+
+
+
+
+
+
+
+
+
+## Network layer
+
+every router has its own network address
+
+The network layer, often synonymous with Layer 3 in the OSI model, has the primary function of routing data packets between devices on different networks. Its most common protocol is the Internet Protocol (IP).
+
+               +-------------------------------------+
+               |    Transport Layer (e.g., TCP/UDP)   |
+               +-------------------------------------+
+                            |
+                            V
+               +-------------------------------------+
+               |      Network Layer (e.g., IP)       |
+               | [Src IP | Dst IP | ... | Data ]      |
+               +-------------------------------------+
+                            |
+                            V
+               +-------------------------------------+
+               |   Data Link Layer (e.g., Ethernet)  |
+               +-------------------------------------+
+                            |
+                            V
+               +-------------------------------------+
+               |           Physical Layer            |
+               +-------------------------------------+
+
+1) Data Reception:
+
+The network layer receives data (often called segments) from the transport layer (e.g., TCP or UDP segments)
+
+
+2) Packet Creation:
+
+- For each segment, the network layer adds its own header, creating a packet. The header typically includes:
+  - Source IP Address
+  - Destination IP Address
+  - Other fields like Time-to-Live (TTL), protocol type, and more.
+
+3) Routing:
+
+The primary role of the network layer is to determine the best path to deliver the packet to its destination. This is done through routers which inspect the destination IP address and consult their routing tables to decide on the packet's next hop.
+
+4) Forwarding:
+
+Once the path is determined, the packet is sent to the next router or device in its path. This involves passing the packet down to the data link layer (e.g., Ethernet) which then sends it to the physical layer for actual transmission.
+
+5) Data Handling at Intermediate Routers:
+
+At each intermediate router, the packet is moved from the physical layer up to the network layer. The router then decides the next hop for the packet and sends it onward, back down through the layers.
+
+6) Packet Arrival:
+
+Once the packet arrives at its destination (determined by the destination IP address), it moves up the layers. The network layer strips off its header and hands the encapsulated data (e.g., a TCP or UDP segment) to the transport layer.
+
+7) Error Handling and TTL:
+
+The network layer also has mechanisms to handle issues. For instance, the Time-to-Live (TTL) field in the IP header decreases by one every time a router handles a packet. If TTL reaches zero, the packet is discarded. This prevents packets from endlessly looping in the network.
+
+
+
+
+
+
+
+
+
+application layer protocol(http)
+tcp level protocol (tcp and udp)
+network layer protocol (ip)
+
+
+
+
+transport layer data will be in segments
+
+network layer packets'
+data link layer frames
+
+
